@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ group.name }}</title>
+</head>
+<body>
+<h1>{{ group.name }} 的 IP 列表</h1>
+<ul>
+  {% for server in servers %}
+  <li>
+    {{ server.ip }}
+    <form action="/group/{{ group.id }}/delete_ip" method="post" style="display:inline">
+      <input type="hidden" name="server_id" value="{{ server.id }}">
+      <button type="submit">删除</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+
+<h2>添加新IP</h2>
+<form action="/group/{{ group.id }}/add_ip" method="post">
+  <input type="text" name="ip" placeholder="输入IP地址" required>
+  <button type="submit">添加</button>
+</form>
+
+<a href="/">返回补机组列表</a>
+</body>
+</html>

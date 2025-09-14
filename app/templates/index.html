@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ServerFailover Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { margin-top: 30px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f0f0f0; }
+        form { margin-bottom: 20px; }
+        input[type=text], textarea { padding: 5px; width: 300px; }
+        button { padding: 5px 10px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>ServerFailover Manager</h1>
+
+    <!-- 添加补机组 -->
+    <h2>添加补机组</h2>
+    <form method="post" action="/add_group/">
+        <label>组名: <input type="text" name="name" required></label><br>
+        <label>执行脚本: <textarea name="script" required></textarea></label><br>
+        <button type="submit">添加组</button>
+    </form>
+
+    <!-- 展示补机组 -->
+    <h2>补机组列表</h2>
+    {% for group in groups %}
+        <h3>{{ group.name }} (ID: {{ group.id }})</h3>
+        <p>执行脚本: {{ group.script }}</p>
+
+        <!-- 添加服务器 -->
+        <form method="post" action="/add_server/">
+            <input type="hidden" name="group_id" value="{{ group.id }}">
+            <label>IP: <input type="text" name="ip" required></label>
+            <button type="submit">添加服务器</button>
+        </form>
+
+        <!-- 服务器列表 -->
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>IP</th>
+            </tr>
+            {% for server in servers %}
+                {% if server.group_id == group.id %}
+                <tr>
+                    <td>{{ server.id }}</td>
+                    <td>{{ server.ip }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% endfor %}
+</body>
+</html>
